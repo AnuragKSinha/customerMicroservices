@@ -1,0 +1,27 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: fraud
+  Datasource:
+    username: 'postgres'
+    url: jdbc:postgresql://localhost:5432/fraud
+    password: 'password'
+
+  jpa:
+    properties:
+      hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      formal_sql: 'true'
+
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
