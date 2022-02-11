@@ -1,7 +1,7 @@
 package com.sinhaanurag.fraud.controller;
 
+import com.sinhaanurag.clients.fraud.FraudCheckResponse;
 import com.sinhaanurag.fraud.service.FraudCheckService;
-import com.sinhaanurag.fraud.response.FraudCheckResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.GetMapping;

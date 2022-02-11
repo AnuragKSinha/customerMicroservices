@@ -1,4 +1,4 @@
-package com.sinhaanurag.fraud.response;
+package com.sinhaanurag.clients.fraud;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

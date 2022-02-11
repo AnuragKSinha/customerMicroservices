@@ -1,9 +1,10 @@
 package com.sinhaanurag.customer.service;
 
+import com.sinhaanurag.clients.fraud.FraudCheckResponse;
+import com.sinhaanurag.clients.fraud.FraudClient;
 import com.sinhaanurag.customer.model.Customer;
 import com.sinhaanurag.customer.dao.CustomerRepository;
 import com.sinhaanurag.customer.request.CustomerRequest;
-import com.sinhaanurag.customer.response.FraudCheckResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public class CustomerService {
 	CustomerRepository repo;
 	@Autowired
 	RestTemplate restTemplate;
+	@Autowired
+	FraudClient client;
 	public void registerCustomer(CustomerRequest request){
 		Customer customer = Customer.builder()
 				.firstName(request.getFirstName())
@@ -30,11 +33,7 @@ public class CustomerService {
 		 */
 		repo.saveAndFlush(customer);
 		//todo: check if fraudster
-		FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
-		"http://FRAUD/api/v1/fraud-check/{customerId}",
-				FraudCheckResponse.class,
-				customer.getId()
-		);
+		FraudCheckResponse fraudCheckResponse = client.isFraudster(customer.getId());
 		if(fraudCheckResponse.getIsFraudulentCustomer()){
 			throw new IllegalStateException("fraudster");
 		}
