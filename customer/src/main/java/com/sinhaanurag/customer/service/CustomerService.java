@@ -2,22 +2,23 @@ package com.sinhaanurag.customer.service;
 
 import com.sinhaanurag.clients.fraud.FraudCheckResponse;
 import com.sinhaanurag.clients.fraud.FraudClient;
+import com.sinhaanurag.clients.notification.NotificationClient;
+import com.sinhaanurag.clients.notification.NotificationRequest;
 import com.sinhaanurag.customer.model.Customer;
 import com.sinhaanurag.customer.dao.CustomerRepository;
 import com.sinhaanurag.customer.request.CustomerRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class CustomerService {
 	@Autowired
 	CustomerRepository repo;
 	@Autowired
-	RestTemplate restTemplate;
-	@Autowired
 	FraudClient client;
+	@Autowired
+	NotificationClient notificationClient;
 	public void registerCustomer(CustomerRequest request){
 		Customer customer = Customer.builder()
 				.firstName(request.getFirstName())
@@ -37,6 +38,12 @@ public class CustomerService {
 		if(fraudCheckResponse.getIsFraudulentCustomer()){
 			throw new IllegalStateException("fraudster");
 		}
-		//todo: send notification
+		//todo: make it async: i.e. add it to Queue
+		notificationClient.sendNotification(NotificationRequest.builder()
+				.toCustomerId(customer.getId())
+				.toCustomerName(customer.getEmail())
+				.message(String.format("Hi %s, Welcome to SinhaServices",customer.getFirstName()))
+				.build());
+
 	}
 }
